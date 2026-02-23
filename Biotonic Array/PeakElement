@@ -1,0 +1,27 @@
+GFG: Peak element
+
+IDEA
+Idea lets us realize that the water trapped at any index depends on the minimum of the maximum height on its left and right.
+Ex:
+Water at index i = min(leftMax, rightMax) − height[i]
+But calculating leftMax and rightMax for every index separately is slow.
+THINK: Water depends on left max and right max
+________________________________________
+APPROACH
+Approach lets us use two pointers to calculate water in one pass without extra space.
+Steps thinking:
+•	Start with two pointers: left and right
+•	Maintain:
+o	lMax → maximum height seen from left
+o	rMax → maximum height seen from right
+•	Always process the side with smaller max, because:
+o	Smaller max decides the water level
+How we decide:
+•	If rMax <= lMax
+→ water at right depends on rMax
+•	Else
+→ water at left depends on lMax
+After calculating water:
+•	Update the corresponding max
+•	Move that pointer inward
+THINK: Two pointers + smaller max decides water
