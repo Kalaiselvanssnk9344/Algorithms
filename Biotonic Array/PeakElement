@@ -1,3 +1,5 @@
+GFG: https://www.geeksforgeeks.org/problems/peak-element/1?page=1&category=Arrays&difficulty=Medium&status=solved&sortBy=submissions
+
 IDEA
 
 Idea lets us realize that a peak element is always guaranteed to exist in an array.
@@ -63,3 +65,48 @@ After moving:
 THINK:
 Binary Search + move toward greater neighbor
 Greater side always contains a peak 🚀
+
+
+CODING
+class Solution {
+    public int peakElement(int[] arr) {
+        // code here
+        int n = arr.length;
+        
+        if (n == 1) {
+            return 0;
+        }
+        
+        if (arr[0] > arr[1]) {
+            return 0;
+        }
+        
+        if (arr[n - 2] < arr[n - 1]) {
+            return n - 1;
+        }
+        
+        int low = 1;
+        int high = n - 2;
+        
+        while (low <= high) { // less than or eqaul to is used
+            int mid = low + (high - low) / 2;
+            
+            if (arr[mid - 1] < arr[mid] && arr[mid] > arr[mid + 1]) {
+                return mid;
+            }
+            
+            if (arr[mid] < arr[mid + 1]) {
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+            
+        }
+        
+        
+        
+        
+    return 0;
+    }
+}
