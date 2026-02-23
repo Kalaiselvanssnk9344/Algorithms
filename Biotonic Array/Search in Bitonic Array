@@ -1,0 +1,192 @@
+INTERVIEW BIT: https://www.interviewbit.com/problems/search-in-bitonic-array/
+
+IDEA
+
+Idea lets us realize that a Bitonic Array has two parts:
+
+• First part → strictly increasing
+• Second part → strictly decreasing
+
+Example:
+-8, 1, 2, 3, 4, 5, -2, -3
+
+Here:
+Increasing → -8 → 5
+Decreasing → 5 → -3
+
+The highest element is called the Bitonic Point (Peak).
+
+THINK:
+Bitonic array = Increasing part + Peak + Decreasing part
+
+Now, to search a key:
+
+• If key is greater than peak → impossible → return -1
+• If key equals peak → return peak index
+• Otherwise:
+o Search in left (ascending) part
+o If not found → search in right (descending) part
+
+Since both sides are sorted, we can use Binary Search.
+
+THINK:
+Find Peak → Do Binary Search on both sides
+
+APPROACH
+
+Approach lets us solve the problem in 3 main steps using Binary Search logic.
+
+STEP 1: Find Bitonic Point
+
+We use a modified binary search:
+
+• Find mid
+• If:
+arr[mid] > arr[mid-1]
+AND
+arr[mid] > arr[mid+1]
+→ mid is the peak
+
+• If array is still increasing
+arr[mid] < arr[mid+1]
+→ Peak lies on right
+→ Search right half
+
+• Else
+→ Peak lies on left
+→ Search left half
+
+THINK:
+If slope goes up → move right
+If slope goes down → move left
+
+Time: O(log n)
+
+STEP 2: Search in Increasing Part
+
+Use normal Binary Search:
+
+• If mid > key → move left
+• If mid < key → move right
+
+Time: O(log n)
+
+STEP 3: Search in Decreasing Part
+
+Use modified Binary Search:
+
+• If mid < key → move left
+• If mid > key → move right
+
+(Conditions reverse because array is descending)
+
+Time: O(log n)
+
+Final Complexity
+
+• Finding peak → O(log n)
+• Searching left → O(log n)
+• Searching right → O(log n)
+
+Overall:
+O(log n)
+
+Final Thinking Structure
+
+Bitonic Array
+→ Find Peak
+→ Binary Search Left
+→ Binary Search Right
+
+THINK:
+Peak splits array into two sorted halves
+Binary Search works because both halves are sorted 🚀
+
+
+CODE:
+public class Solution {
+    
+    public int findBitonicPoint(ArrayList<Integer> list) {
+        int n = list.size();
+        int low = 0;
+        int high = n - 1;
+        int idx = -1;
+        
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (list.get(mid - 1) < list.get(mid) && list.get(mid) > list.get(mid + 1)) {
+                idx = mid;
+                break;
+            }
+            
+            if (list.get(mid) < list.get(mid + 1)) {
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+            
+        }
+        return idx;
+    }
+    
+    public int searchInIncreasing(ArrayList<Integer> list, int high, int target) {
+        int low = 0;
+        int idx = -1;
+        
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (list.get(mid) == target) {
+                idx = mid;
+                break;
+            }
+            
+            if (list.get(mid) < target) {
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+            
+        }
+        return idx;       
+    }
+    public int searchInDecreasing(ArrayList<Integer> list, int low, int target) {
+        int high = list.size() - 1;
+        int idx = -1;
+        
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (list.get(mid) == target) {
+                idx = mid;
+                break;
+            }
+            
+            if (list.get(mid) < target) {
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+            
+        }
+        return idx; 
+        
+    }
+    
+    public int solve(ArrayList<Integer> A, int B) {
+        
+        int bitonicPoint = findBitonicPoint(A);
+        
+        int res = searchInIncreasing(A, bitonicPoint, B);
+        
+        if (res == -1) {
+            res = searchInDecreasing(A, bitonicPoint + 1, B);
+        }
+        
+        return res;    
+    }
+}
