@@ -1,27 +1,65 @@
-GFG: Peak element
-
 IDEA
-Idea lets us realize that the water trapped at any index depends on the minimum of the maximum height on its left and right.
-Ex:
-Water at index i = min(leftMax, rightMax) − height[i]
-But calculating leftMax and rightMax for every index separately is slow.
-THINK: Water depends on left max and right max
-________________________________________
+
+Idea lets us realize that a peak element is always guaranteed to exist in an array.
+
+A peak element is:
+Peak at index i →
+arr[i] > arr[i-1] AND arr[i] > arr[i+1]
+
+Instead of checking every element (which is slow), we observe:
+
+If the right neighbor is greater →
+A peak must exist on the right side.
+
+If the left neighbor is greater →
+A peak must exist on the left side.
+
+Because:
+Array always moves in an uphill or downhill pattern,
+and an uphill must eventually become downhill → creating a peak.
+
+So we don’t need to search the whole array.
+
+THINK:
+If slope goes up → move right
+If slope goes down → move left
+
 APPROACH
-Approach lets us use two pointers to calculate water in one pass without extra space.
+
+Approach lets us use Binary Search to find a peak in O(log n) time.
+
 Steps thinking:
-•	Start with two pointers: left and right
-•	Maintain:
-o	lMax → maximum height seen from left
-o	rMax → maximum height seen from right
-•	Always process the side with smaller max, because:
-o	Smaller max decides the water level
-How we decide:
-•	If rMax <= lMax
-→ water at right depends on rMax
-•	Else
-→ water at left depends on lMax
-After calculating water:
-•	Update the corresponding max
-•	Move that pointer inward
-THINK: Two pointers + smaller max decides water
+
+• If array has only one element → it is the peak
+
+• Check boundaries:
+o If first element > second → return 0
+o If last element > second last → return n-1
+
+• Now apply Binary Search between 1 and n-2
+
+At each step:
+
+• Find mid
+
+• If:
+arr[mid] > arr[mid-1]
+AND
+arr[mid] > arr[mid+1]
+→ mid is peak → return mid
+
+• If right neighbor is greater
+→ Peak must exist on right side
+→ Move lo = mid + 1
+
+• Else
+→ Peak must exist on left side
+→ Move hi = mid - 1
+
+After moving:
+• We reduce search space by half
+• Continue until peak is found
+
+THINK:
+Binary Search + move toward greater neighbor
+Greater side always contains a peak 🚀
