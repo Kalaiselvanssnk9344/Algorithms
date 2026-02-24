@@ -1,0 +1,158 @@
+GFG: https://www.geeksforgeeks.org/problems/aggressive-cows/1?page=1&category=Binary%20Search&sortBy=submissions
+
+IDEA
+
+Idea lets us realize that:
+
+We are not directly placing cows.
+We are trying to maximize the minimum distance between any two cows.
+
+So instead of asking:
+
+"Where should cows be placed?"
+
+We ask:
+
+"Is it possible to place all k cows if minimum distance = dist?"
+
+If a distance is possible →
+Try a bigger distance
+
+If a distance is not possible →
+Try a smaller distance
+
+This is a classic:
+
+THINK:
+Maximize minimum distance
+→ Binary Search on answer
+
+APPROACH
+
+Approach lets us apply Binary Search on distance space.
+
+Step 1: Sort the stalls
+
+Because distance only makes sense when stalls are in order.
+
+Step 2: Define search space
+
+• Minimum distance → 1
+• Maximum distance → last stall − first stall
+
+So:
+
+lo = 1
+hi = maxDistance
+
+Step 3: Binary Search on distance
+
+Find mid distance:
+
+mid = possible minimum distance
+
+Now check:
+
+Can we place k cows such that
+distance between adjacent cows ≥ mid?
+
+Step 4: Greedy Check Function
+
+Logic:
+
+• Place first cow at first stall
+• For every next stall:
+If current stall − previousPlaced ≥ dist
+→ Place cow
+→ Increase count
+
+If count ≥ k
+→ distance is possible
+
+THINK:
+Always place cow at earliest valid stall (Greedy works)
+
+Step 5: Binary Search Decision
+
+If distance is possible:
+• Store result
+• Try larger distance
+lo = mid + 1
+
+If not possible:
+• Reduce distance
+hi = mid - 1
+
+Why this works?
+
+If distance D is possible
+→ Any distance < D is also possible
+
+If distance D is not possible
+→ Any distance > D is also not possible
+
+This monotonic behavior allows Binary Search.
+
+Time Complexity
+
+Sorting → O(n log n)
+Binary Search → O(log(maxDistance))
+Each check → O(n)
+
+Total:
+O(n log n)
+
+Final Thinking Structure
+
+Sort stalls
+Binary Search on distance
+Greedy placement check
+Move toward larger possible distance
+
+THINK:
+Binary Search on Answer
+Greedy validates each guess 🚀
+
+class Solution {
+    
+    public boolean check(int[] stalls, int k, int distance) {
+        int count = 1;
+        int prev = stalls[0];
+        
+        for (int i = 1; i < stalls.length; i++) {
+            if (stalls[i] - prev >= distance) {
+                prev = stalls[i];
+                count++;
+            }
+        }
+        
+        return (count >= k);
+    }
+    
+    
+    public int aggressiveCows(int[] stalls, int k) {
+        // code here
+        int n = stalls.length;
+        
+        Arrays.sort(stalls);
+        
+        int low = 1;
+        int high = stalls[n - 1] - stalls[0];
+        int res = 0;
+        
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            
+            if (check(stalls, k, mid)) {
+                res = mid;
+                low = mid + 1;
+            }
+            else {
+                high = mid - 1;
+            }
+            
+        }
+        
+        return res;
+    }
+}
