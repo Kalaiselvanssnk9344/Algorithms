@@ -1,0 +1,118 @@
+GFG: https://www.geeksforgeeks.org/problems/binary-matrix-having-maximum-number-of-1s--170647/1?page=2&category=Binary%20Search&sortBy=submissions
+
+IDEA
+
+Idea lets us realize that:
+
+Each row is sorted (0s first, then 1s).
+
+Example row:
+0 0 0 1 1 1
+
+So:
+• If we find the leftmost 1,
+• Then everything to its right is also 1
+
+That means:
+More left the 1 appears → More number of 1s in that row
+
+So we don’t need to count all 1s row by row.
+
+THINK:
+Leftmost 1 decides maximum count
+
+APPROACH
+
+Approach lets us scan the matrix in O(N) time using a smart pointer movement.
+
+Instead of checking every element:
+
+• Start from top-right corner
+(i = 0, j = N-1)
+
+Why top-right?
+Because:
+• Moving left → values decrease (1 → 0)
+• Moving down → check next row
+
+Steps thinking:
+
+• Initialize:
+i = 0
+j = N-1
+row = 0
+
+• For every row:
+While current element is 1:
+o Update row = i
+o Move left → j--
+
+Why move left?
+Because we are trying to find an earlier (more left) 1.
+
+If we move left successfully:
+→ That row has more 1s than previous rows.
+
+Then move to next row (i++).
+
+Important Observation:
+
+Pointer j only moves left.
+It never resets to right.
+
+So total movements:
+• At most N moves left
+• At most N moves down
+
+Total time = O(N)
+
+How count is calculated:
+
+After loop:
+Number of 1s =
+N - 1 - j
+
+Because:
+• j stops at last 0 position
+• Everything after that is 1
+
+Final Thinking Structure
+
+Sorted rows
+→ Start from top-right
+→ Move left if 1
+→ Move down if 0
+→ Track row where we moved most left
+
+THINK:
+Start top-right
+Move left on 1
+Move down on 0
+More left = more 1s 🚀
+
+
+
+
+CODE:
+// User function Template for Java
+
+class Solution {
+    public int[] findMaxRow(int mat[][], int N) {
+        // code here
+        int[] res = new int[2];
+        
+        int i , j = N - 1, row = 0;
+        for (i = 0; i < N; i++) { // try j = N - 1 in this , incase of error
+            
+            while (j >= 0 && mat[i][j] == 1) {
+                row = i;
+                j--;
+            }
+        }
+        
+        res[0] = row;
+        res[1] = N - 1 - j;
+        
+        return res;
+    }
+};
