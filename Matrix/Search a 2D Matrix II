@@ -1,0 +1,114 @@
+LEETCODE: https://leetcode.com/problems/search-a-2d-matrix-ii/description/
+
+IDEA
+
+Idea lets us realize that the matrix is:
+
+• Sorted row-wise (left → right increasing)
+• Sorted column-wise (top → bottom increasing)
+
+Example:
+
+3   30   38
+20  52   54
+35  60   69
+
+So from any element:
+
+• Left side → smaller
+• Down side → larger
+
+This special structure allows us to eliminate one full row or one full column at every step.
+
+THINK:
+Use sorting property to eliminate space
+
+APPROACH
+
+Approach lets us start from the top-right corner.
+
+Why top-right?
+
+Because from there:
+• Left → smaller
+• Down → bigger
+
+That gives us decision power.
+
+Steps thinking:
+
+• Start at:
+i = 0
+j = m - 1
+
+• While inside matrix:
+
+Case 1:
+If x > mat[i][j]
+→ x cannot be in that row (everything left is smaller)
+→ Move down → i++
+
+Case 2:
+If x < mat[i][j]
+→ x cannot be in that column (everything below is larger)
+→ Move left → j--
+
+Case 3:
+If equal
+→ Element found → return true
+
+If loop ends:
+→ Element not present → return false
+
+Why this works?
+
+Each step removes:
+• One full row OR
+• One full column
+
+So total moves:
+At most n + m
+
+Time Complexity:
+O(n + m)
+
+Space Complexity:
+O(1)
+
+Final Thinking Structure
+
+Row-wise sorted
+Column-wise sorted
+
+Start top-right
+If bigger → move down
+If smaller → move left
+
+THINK:
+Eliminate one row or one column every step 🚀
+
+CODE:
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        int i = 0;
+        int j = n - 1;
+
+        while (i < m && j >= 0) {
+            if (matrix[i][j] < target) {
+                i++;
+            }
+            else if (target < matrix[i][j]) {
+                j--;
+            }
+            else {
+                return true;
+            }
+        }
+
+    return false;
+    }
+}
