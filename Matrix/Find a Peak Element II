@@ -1,0 +1,154 @@
+LEETCODE: https://leetcode.com/problems/find-a-peak-element-ii/description/
+
+IDEA
+
+Idea lets us realize that a 2D peak means:
+
+An element is greater than its left and right neighbors
+(Up & down are automatically handled because we pick column maximum)
+
+Peak at (row, col) →
+mat[row][col] > left
+AND
+mat[row][col] > right
+
+Instead of checking every cell (O(m × n)),
+we apply Binary Search on columns.
+
+Key observation:
+
+If we pick the maximum element in a column,
+then:
+
+• It is already greater than all elements above and below
+• We only need to compare left and right
+
+So we reduce 2D problem → 1D binary search on columns.
+
+THINK:
+Column max removes up/down check
+Binary search decides left/right
+
+APPROACH
+
+Approach lets us apply Binary Search on columns.
+
+Step 1: Binary search on column space
+
+• left = 0
+• right = n - 1
+
+• Find mid column → midCol
+
+Step 2: Find maximum element in mid column
+
+Scan that column:
+
+• maxRow = index of maximum element in midCol
+
+Why?
+
+Because:
+This guarantees
+mat[maxRow][midCol]
+is greater than its top and bottom neighbors.
+
+Time for this step = O(m)
+
+Step 3: Compare left and right neighbors
+
+Get:
+
+• leftVal
+• rightVal
+
+Now check:
+
+Case 1:
+If current > left AND current > right
+→ This is a peak
+→ Return (maxRow, midCol)
+
+Case 2:
+If right neighbor is bigger
+→ Peak must exist on right side
+→ Move search space right
+left = midCol + 1
+
+Case 3:
+Else
+→ Peak must exist on left side
+→ Move search space left
+right = midCol - 1
+
+Why moving works?
+
+If right neighbor is larger,
+it means slope is increasing →
+Peak must exist on that side.
+
+Same logic as 1D peak element problem.
+
+Time Complexity
+
+Binary search on columns → O(log n)
+For each step → scan one column → O(m)
+
+Total =
+O(m × log n)
+
+Space = O(1)
+
+Final Thinking Structure
+
+Binary Search on columns
+→ Find column max
+→ Compare left & right
+→ Move toward greater side
+
+THINK:
+Reduce 2D → 1D
+Column max simplifies vertical check
+Move toward greater neighbor 🚀
+
+
+CODE:
+
+class Solution {
+    public int[] findPeakGrid(int[][] mat) {
+        
+        int n = mat.length;
+        int m = mat[0].length;
+
+        int low = 0;
+        int high = m - 1;
+
+        while (low <= high) {
+            int midCol = low + (high - low) / 2;
+
+            int maxRow = 0;
+            for (int i = 1; i < n; i++) {
+                if (mat[i][midCol] > mat[maxRow][midCol]) {
+                    maxRow = i;
+                }
+            }
+
+            int leftVal = (midCol - 1 >= 0) ? mat[maxRow][midCol - 1] : -1;
+            int rightVal = (midCol + 1 < m) ? mat[maxRow][midCol + 1] : -1;
+
+            if (leftVal < mat[maxRow][midCol] && mat[maxRow][midCol] > rightVal) {
+                return new int[]{maxRow, midCol};
+            }
+
+            if (mat[maxRow][midCol] < rightVal) {
+                low = midCol + 1;
+            }
+            else {
+                high = midCol - 1;
+            }
+
+        }
+
+        return new int[]{-1, -1};
+    }
+}
