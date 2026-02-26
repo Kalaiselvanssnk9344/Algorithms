@@ -1,0 +1,47 @@
+LEETCODE: 1482. Minimum Number of Days to Make m Bouquets
+
+
+
+class Solution {
+
+    public boolean check(int[] arr, int m, int k, int mid) {
+        int bouquet = 0;
+        int count = 0;
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] <= mid) {
+                count++;
+                if (count == k) {
+                    bouquet++;
+                    count = 0;
+                }
+            }
+            else {
+                count = 0;
+            }
+        }
+
+        return (bouquet >= m);
+    }
+
+    public int minDays(int[] bloomDay, int m, int k) {
+        int n = bloomDay.length;
+
+        int low = 0;
+        int high = Arrays.stream(bloomDay).max().getAsInt();
+        int res = -1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (check(bloomDay, m, k, mid)) {
+                res = mid;
+                high = mid - 1; 
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        return res;
+    }
+}
